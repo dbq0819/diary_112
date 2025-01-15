@@ -56,6 +56,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 设置删除监听器
+        adapter.setOnItemDeleteListener(new DiaryAdapter.OnItemDeleteListener() {
+            @Override
+            public void onItemDelete(DiaryEntry diaryEntry) {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        database.diaryEntryDao().delete(diaryEntry); // 删除日记项
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        loadEntries(); // 删除后刷新列表
+                    }
+                }.execute();
+            }
+        });
+
         loadEntries();
     }
 
@@ -85,6 +105,26 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, EditActivity.class);
                         intent.putExtra("DIARY_ENTRY_ID", diaryEntry.getId()); // 传递日记项的ID
                         startActivity(intent);
+                    }
+                });
+
+                // 重新设置删除监听器
+                adapter.setOnItemDeleteListener(new DiaryAdapter.OnItemDeleteListener() {
+                    @Override
+                    public void onItemDelete(DiaryEntry diaryEntry) {
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                database.diaryEntryDao().delete(diaryEntry); // 删除日记项
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                                loadEntries(); // 删除后刷新列表
+                            }
+                        }.execute();
                     }
                 });
             }

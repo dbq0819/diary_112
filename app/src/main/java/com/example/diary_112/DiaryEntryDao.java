@@ -1,6 +1,7 @@
 package com.example.diary_112;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -20,4 +21,7 @@ public interface DiaryEntryDao {
 
     @Update
     void update(DiaryEntry diaryEntry);
+
+    @Delete
+    void delete(DiaryEntry diaryEntry); // 添加删除方法
 }
