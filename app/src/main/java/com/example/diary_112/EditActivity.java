@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class EditActivity extends AppCompatActivity{
+public class EditActivity extends AppCompatActivity {
     private EditText editTextTitle, editTextContent;
     private Button buttonSave;
     private AppDatabase database;
@@ -39,10 +39,6 @@ public class EditActivity extends AppCompatActivity{
         String title = editTextTitle.getText().toString();
         String content = editTextContent.getText().toString();
         long timestamp = System.currentTimeMillis();
-
-        // 生成 monthYear 字段（例如 "2023-10"）
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
-        String monthYear = sdf.format(new Date(timestamp));
 
         final DiaryEntry entry = new DiaryEntry();
         entry.setTitle(title);

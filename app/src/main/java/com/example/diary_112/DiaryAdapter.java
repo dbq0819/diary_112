@@ -31,7 +31,13 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     public void onBindViewHolder(@NonNull DiaryViewHolder holder, int position) {
         DiaryEntry entry = diaryEntries.get(position);
         holder.titleTextView.setText(entry.getTitle());
-        holder.contentTextView.setText(entry.getContent());
+
+        // 只显示内容的前两行
+        String content = entry.getContent();
+        if (content != null && content.length() > 50) { // 假设每行大约25个字符
+            content = content.substring(0, 50) + "...";
+        }
+        holder.contentTextView.setText(content);
     }
 
     @Override

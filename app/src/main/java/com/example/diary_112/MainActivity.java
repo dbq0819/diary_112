@@ -18,8 +18,7 @@ import java.util.Map;
 import com.example.diary_112.DiaryAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText editTextTitle, editTextContent;
-    private Button buttonSave;
+    private Button buttonCreate;
     private RecyclerView recyclerView;
     private DiaryAdapter adapter;
     private AppDatabase database;
@@ -29,50 +28,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editTextTitle = findViewById(R.id.editTextTitle);
-        editTextContent = findViewById(R.id.editTextContent);
-        buttonSave = findViewById(R.id.buttonSave);
+        buttonCreate = findViewById(R.id.buttonCreate);
         recyclerView = findViewById(R.id.recyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DiaryAdapter(null);
+        adapter = new DiaryAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         database = AppDatabase.getInstance(this);
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        // 跳转到编辑页面
+        buttonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveEntry();
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                startActivity(intent);
             }
         });
 
         loadEntries();
     }
 
-    private void saveEntry() {
-        String title = editTextTitle.getText().toString();
-        String content = editTextContent.getText().toString();
-        long timestamp = System.currentTimeMillis();
-
-        final DiaryEntry entry = new DiaryEntry();
-        entry.setTitle(title);
-        entry.setContent(content);
-        entry.setTimestamp(timestamp);
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                database.diaryEntryDao().insert(entry);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                loadEntries();
-            }
-        }.execute();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadEntries(); // 每次返回首页时刷新日记列表
     }
 
     private void loadEntries() {
