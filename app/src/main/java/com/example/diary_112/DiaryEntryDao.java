@@ -3,6 +3,7 @@ package com.example.diary_112;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -13,4 +14,10 @@ public interface DiaryEntryDao {
 
     @Query("SELECT * FROM diary_entries ORDER BY timestamp DESC")
     List<DiaryEntry> getAllEntries();
+
+    @Query("SELECT * FROM diary_entries WHERE id = :id")
+    DiaryEntry getEntryById(int id);
+
+    @Update
+    void update(DiaryEntry diaryEntry);
 }

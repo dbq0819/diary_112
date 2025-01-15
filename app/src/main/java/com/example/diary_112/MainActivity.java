@@ -46,6 +46,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 设置点击监听器
+        adapter.setOnItemClickListener(new DiaryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DiaryEntry diaryEntry) {
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                intent.putExtra("DIARY_ENTRY_ID", diaryEntry.getId()); // 传递日记项的ID
+                startActivity(intent);
+            }
+        });
+
         loadEntries();
     }
 
@@ -65,8 +75,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(List<DiaryEntry> diaryEntries) {
                 super.onPostExecute(diaryEntries);
-                adapter = new DiaryAdapter(diaryEntries);
-                recyclerView.setAdapter(adapter);
+                adapter = new DiaryAdapter(diaryEntries); // 创建新的适配器实例
+                recyclerView.setAdapter(adapter); // 设置适配器
+
+                // 重新设置监听器
+                adapter.setOnItemClickListener(new DiaryAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(DiaryEntry diaryEntry) {
+                        Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                        intent.putExtra("DIARY_ENTRY_ID", diaryEntry.getId()); // 传递日记项的ID
+                        startActivity(intent);
+                    }
+                });
             }
         }.execute();
     }

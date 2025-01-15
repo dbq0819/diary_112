@@ -15,6 +15,7 @@ public class EditActivity extends AppCompatActivity {
     private EditText editTextTitle, editTextContent;
     private Button buttonSave;
     private AppDatabase database;
+    private DiaryEntry diaryEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,28 @@ public class EditActivity extends AppCompatActivity {
         buttonSave = findViewById(R.id.buttonSave);
 
         database = AppDatabase.getInstance(this);
+
+        // 检查是否有传递过来的日记项 ID
+        int diaryEntryId = getIntent().getIntExtra("DIARY_ENTRY_ID", -1);
+        if (diaryEntryId != -1) {
+            // 加载现有的日记项
+            new AsyncTask<Void, Void, DiaryEntry>() {
+                @Override
+                protected DiaryEntry doInBackground(Void... voids) {
+                    return database.diaryEntryDao().getEntryById(diaryEntryId);
+                }
+
+                @Override
+                protected void onPostExecute(DiaryEntry entry) {
+                    super.onPostExecute(entry);
+                    diaryEntry = entry;
+                    editTextTitle.setText(entry.getTitle());
+                    editTextContent.setText(entry.getContent());
+                }
+            }.execute();
+        } else {
+            diaryEntry = new DiaryEntry();
+        }
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,15 +63,18 @@ public class EditActivity extends AppCompatActivity {
         String content = editTextContent.getText().toString();
         long timestamp = System.currentTimeMillis();
 
-        final DiaryEntry entry = new DiaryEntry();
-        entry.setTitle(title);
-        entry.setContent(content);
-        entry.setTimestamp(timestamp);
+        diaryEntry.setTitle(title);
+        diaryEntry.setContent(content);
+        diaryEntry.setTimestamp(timestamp);
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                database.diaryEntryDao().insert(entry);
+                if (diaryEntry.getId() == 0) {
+                    database.diaryEntryDao().insert(diaryEntry);
+                } else {
+                    database.diaryEntryDao().update(diaryEntry);
+                }
                 return null;
             }
 

@@ -15,9 +15,18 @@ import java.util.Map;
 
 public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder> {
     private List<DiaryEntry> diaryEntries;
+    private OnItemClickListener listener;
 
     public DiaryAdapter(List<DiaryEntry> diaryEntries) {
         this.diaryEntries = diaryEntries;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(DiaryEntry diaryEntry);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -39,6 +48,16 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
             content = content.substring(0, 50) + "...";
         }
         holder.contentTextView.setText(content);
+
+        // 设置点击事件
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onItemClick(entry);
+                }
+            }
+        });
     }
 
     @Override
@@ -47,15 +66,15 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     }
 
     static class DiaryViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView; // 新增 CardView 引用
+        CardView cardView;
         TextView titleTextView;
         TextView contentTextView;
 
         DiaryViewHolder(View itemView) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.cardView); // 绑定 CardView
-            titleTextView = itemView.findViewById(R.id.titleTextView); // 使用自定义 ID
-            contentTextView = itemView.findViewById(R.id.contentTextView); // 使用自定义 ID
+            cardView = itemView.findViewById(R.id.cardView);
+            titleTextView = itemView.findViewById(R.id.titleTextView);
+            contentTextView = itemView.findViewById(R.id.contentTextView);
         }
     }
 }
