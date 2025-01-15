@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     @Override
     public DiaryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_2, parent, false);
+                .inflate(R.layout.item_diary, parent, false);
         return new DiaryViewHolder(view);
     }
 
@@ -46,13 +47,15 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     }
 
     static class DiaryViewHolder extends RecyclerView.ViewHolder {
+        CardView cardView; // 新增 CardView 引用
         TextView titleTextView;
         TextView contentTextView;
 
         DiaryViewHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(android.R.id.text1);
-            contentTextView = itemView.findViewById(android.R.id.text2);
+            cardView = itemView.findViewById(R.id.cardView); // 绑定 CardView
+            titleTextView = itemView.findViewById(R.id.titleTextView); // 使用自定义 ID
+            contentTextView = itemView.findViewById(R.id.contentTextView); // 使用自定义 ID
         }
     }
 }
